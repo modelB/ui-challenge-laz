@@ -3,7 +3,7 @@ import 'style.css'
 import 'favicon.ico'
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
-import { csv } from 'd3-xhr'
+import { csv } from 'd3-request'
 import io from 'socket.io-client'
 
 // Load historical data
@@ -24,6 +24,6 @@ class MyComponent extends Component {
   }
 }
 ReactDOM.render(
-  <MyComponent text='Hello Component' />,
+  <MyComponent text='This is a placeholder React Component. Also, have a look in the dev console to see the data we loaded.' />,
   document.body.appendChild(document.createElement('div'))
 )
