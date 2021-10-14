@@ -7,7 +7,7 @@ import ReactDOM from 'react-dom'
 import { csv } from 'd3-request'
 import { select } from 'd3-selection';
 import { scaleTime, scaleLinear } from 'd3-scale';
-import { extent, max } from 'd3-array';
+import { extent, max, min } from 'd3-array';
 import { axisBottom, axisLeft } from 'd3-axis';
 import { line } from 'd3-shape';
 import { timeParse } from 'd3-time-format'
@@ -20,7 +20,7 @@ import io from 'socket.io-client'
 const margin = {top: 10, right: 30, bottom: 30, left: 60},
     width = 460 - margin.left - margin.right,
     height = 400 - margin.top - margin.bottom;
-    
+
 const svg = select('#chart')
   .append("svg")
     .attr("width", width + margin.left + margin.right)
@@ -30,7 +30,44 @@ const svg = select('#chart')
           "translate(" + margin.left + "," + margin.top + ")");
 
 // Load historical data
-csv('/market-history', (error, data) => console.log('History', error || data))
+// csv('/market-history', (error, data) => console.log('History', error || data))
+csv('/market-history',
+  // When reading the csv, I must format variables:
+  function(d){
+    return { date : timeParse("%Q")(d.timestamp), ticker: d.ticker, price : d.price }
+  },
+
+  // Now I can use this dataset:
+  function(data) {
+    data = data.filter(el => el.ticker === 'FB');
+    console.log('data', data);
+    // Add X axis --> it is a date format
+    var x = scaleTime()
+      .domain(extent(data, function(d) { return d.date; }))
+      .range([ 0, width ]);
+    svg.append("g")
+      .attr("transform", "translate(0," + height + ")")
+      .call(axisBottom(x));
+
+    // Add Y axis
+    var y = scaleLinear()
+      .domain([min(data, function(d) { return +d.price; }), max(data, function(d) { return +d.price; })])
+      .range([ height, 0 ]);
+    svg.append("g")
+      .call(axisLeft(y));
+
+    // Add the line
+    svg.append("path")
+      .datum(data)
+      .attr("fill", "none")
+      .attr("stroke", "steelblue")
+      .attr("stroke-width", 1.5)
+      .attr("d", line()
+        .x(function(d) { return x(d.date) })
+        .y(function(d) { return y(d.price) })
+        )
+
+});
 
 // Subscribe to updates
 const socket = io()
@@ -45,43 +82,43 @@ socket.on('start new day', function (data) { console.log('NewDay', data) })
 
 
 //Read the data
-csv("https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/3_TwoNumOrdered_comma.csv",
+// csv("https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/3_TwoNumOrdered_comma.csv",
 
-  // When reading the csv, I must format variables:
-  function(d){
-    return { date : timeParse("%Y-%m-%d")(d.date), value : d.value }
-  },
+//   // When reading the csv, I must format variables:
+//   function(d){
+//     return { date : timeParse("%Y-%m-%d")(d.date), value : d.value }
+//   },
 
-  // Now I can use this dataset:
-  function(data) {
-    console.log('data', data);
-    // Add X axis --> it is a date format
-    var x = scaleTime()
-      .domain(extent(data, function(d) { return d.date; }))
-      .range([ 0, width ]);
-    svg.append("g")
-      .attr("transform", "translate(0," + height + ")")
-      .call(axisBottom(x));
+//   // Now I can use this dataset:
+//   function(data) {
+//     console.log('data', data);
+//     // Add X axis --> it is a date format
+//     var x = scaleTime()
+//       .domain(extent(data, function(d) { return d.date; }))
+//       .range([ 0, width ]);
+//     svg.append("g")
+//       .attr("transform", "translate(0," + height + ")")
+//       .call(axisBottom(x));
 
-    // Add Y axis
-    var y = scaleLinear()
-      .domain([0, max(data, function(d) { return +d.value; })])
-      .range([ height, 0 ]);
-    svg.append("g")
-      .call(axisLeft(y));
+//     // Add Y axis
+//     var y = scaleLinear()
+//       .domain([0, max(data, function(d) { return +d.value; })])
+//       .range([ height, 0 ]);
+//     svg.append("g")
+//       .call(axisLeft(y));
 
-    // Add the line
-    svg.append("path")
-      .datum(data)
-      .attr("fill", "none")
-      .attr("stroke", "steelblue")
-      .attr("stroke-width", 1.5)
-      .attr("d", line()
-        .x(function(d) { return x(d.date) })
-        .y(function(d) { return y(d.value) })
-        )
+//     // Add the line
+//     svg.append("path")
+//       .datum(data)
+//       .attr("fill", "none")
+//       .attr("stroke", "steelblue")
+//       .attr("stroke-width", 1.5)
+//       .attr("d", line()
+//         .x(function(d) { return x(d.date) })
+//         .y(function(d) { return y(d.value) })
+//         )
 
-})
+// })
 
 //END D3
 
