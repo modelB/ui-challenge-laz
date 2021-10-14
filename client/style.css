@@ -3,3 +3,14 @@
 body {
   font-family: 'News Cycle', Sans-serif;
 }
+
+#selection {
+  display: flex;
+  max-width: 500px;
+  justify-content: space-around;
+  align-items: center;
+}
+
+#title {
+  margin: 0 50px;
+}
