@@ -2,7 +2,9 @@ import 'index.html'
 import 'style.css'
 import 'favicon.ico'
 import Selection from './Selection'
-import React, { Component } from 'react'
+import OneStockChart from './OneStockChart';
+// import ManyStockChart from './ManyStockChart';
+import React, { Component, setState } from 'react'
 import ReactDOM from 'react-dom'
 import { csv } from 'd3-request'
 import { select } from 'd3-selection';
@@ -35,6 +37,7 @@ class App extends Component {
             data: []
         }
         this.checkTheBox = this.checkTheBox.bind(this);
+        this.componentDidMount = this.componentDidMount.bind(this);
     }
 
     checkTheBox(ticker) {
@@ -59,15 +62,15 @@ class App extends Component {
             // csv('/market-history',
     // // When reading the csv, I must format variables:
     // function(d){
-        const formattedData = { date : timeParse("%Q")(data.timestamp), ticker: data.ticker, price : data.price },
-
-// function(data) {
-// data = data.filter(el => el.ticker === 'FB');
-// console.log('data', data);
-            this.state.data = data;
+            // const formattedData = { date : timeParse("%Q")(data.timestamp), ticker: data.ticker, price : data.price };
+            data = data.map(el => {
+                return { ...el, date: timeParse("%Q")(el.timestamp) } 
+                })
+            this.setState({ ...this.state, data: data })
             console.log('History', error || this.state.data);
         });
     }
+
     
     
 // // Add X axis --> it is a date format
@@ -99,14 +102,18 @@ class App extends Component {
 // });
 
 // // Subscribe to updates
-// const socket = io()
-// socket.on('market events', function (data) { console.log('Change', data) })
-// socket.on('start new day', function (data) { console.log('NewDay', data) })
+
   render() {
-    const { text } = this.props
+    // const socket = io()
+    // socket.on('market events', function (data) { console.log('Change', data) })
+    // socket.on('start new day', function (data) { console.log('NewDay', data) })
+    let tickerCount = Object.entries(this.state.selected).reduce((a,c)=> {
+        return c[1] ? a+1 : a;
+    },0);
     return (
       <div id="app">
           <Selection selected={this.state.selected} checkTheBox={this.checkTheBox} />
+          {(this.state.chartType === "single") ? <OneStockChart state={this.state} /> : null}
       </div>
     )
   }

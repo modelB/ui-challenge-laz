@@ -17,15 +17,6 @@ import io from 'socket.io-client'
 class OneStockChart extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            selected: {
-                FB: true,
-                GOOG: false,
-                AAPL: false,
-                MSFT: false
-            },
-            data: []
-        }
     }
     // Build D3 Chart
 
@@ -81,18 +72,15 @@ class OneStockChart extends Component {
 
 // });
 
-// // Subscribe to updates
-// const socket = io()
-// socket.on('market events', function (data) { console.log('Change', data) })
-// socket.on('start new day', function (data) { console.log('NewDay', data) })
   render() {
-    const { text } = this.props
+    const { margin, width, height, selected, data } = this.props.state;
+    
     return (
-      <div id="app">
-          <Selection selected={this.state.selected} />
+      <div id="oneStockChart">
+          {JSON.stringify(selected)}
       </div>
     )
   }
 }
 
-export default App
+export default OneStockChart
