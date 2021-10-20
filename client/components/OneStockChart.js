@@ -17,67 +17,86 @@ import io from 'socket.io-client'
 class OneStockChart extends Component {
     constructor(props) {
         super(props);
+        this.state = this.props.state.selected
     }
-    // Build D3 Chart
 
-// create svg
-// const margin = {top: 10, right: 30, bottom: 30, left: 60},
-// width = 460 - margin.left - margin.right,
-// height = 400 - margin.top - margin.bottom;
+    componentDidMount() {
+      const chart = document.getElementById("chart");
+      console.log('childnoses', chart.childNodes);
+      const svg = document.querySelector('svg');
+      if (svg) svg.parentNode.removeChild(svg);
+      // chart.removeChild(chart.childNodes[0]);
+    }
 
-// const svg = select('#chart')
-// .append("svg")
-// .attr("width", width + margin.left + margin.right)
-// .attr("height", height + margin.top + margin.bottom)
-// .append("g")
-// .attr("transform",
-//       "translate(" + margin.left + "," + margin.top + ")");
+    // componentDidUpdate() {
+    //   const svg = document.querySelector('svg');
+    //   if (svg) svg.parentNode.removeChild(svg);
+    // }
+    //TODO: make svg removed when 2 tickers or 0 tickers selected
 
-// // Load historical data
-// // csv('/market-history', (error, data) => console.log('History', error || data))
-// csv('/market-history',
-// // When reading the csv, I must format variables:
-// function(d){
-// return { date : timeParse("%Q")(d.timestamp), ticker: d.ticker, price : d.price }
-// },
-
-// function(data) {
-// data = data.filter(el => el.ticker === 'FB');
-// console.log('data', data);
-// // Add X axis --> it is a date format
-// var x = scaleTime()
-//   .domain(extent(data, function(d) { return d.date; }))
-//   .range([ 0, width ]);
-// svg.append("g")
-//   .attr("transform", "translate(0," + height + ")")
-//   .call(axisBottom(x));
-
-// // Add Y axis
-// var y = scaleLinear()
-//   .domain([min(data, function(d) { return +d.price; }), max(data, function(d) { return +d.price; })])
-//   .range([ height, 0 ]);
-// svg.append("g")
-//   .call(axisLeft(y));
-
-// // Add the line
-// svg.append("path")
-//   .datum(data)
-//   .attr("fill", "none")
-//   .attr("stroke", "steelblue")
-//   .attr("stroke-width", 1.5)
-//   .attr("d", line()
-//     .x(function(d) { return x(d.date) })
-//     .y(function(d) { return y(d.price) })
-//     )
-
-// });
 
   render() {
-    const { margin, width, height, selected, data } = this.props.state;
+    console.log('chart state', this.state);
+    const { margin, width, height, data } = this.props.state;
+    const selected = this.state;
+        // Build D3 Chart
+    let tickerId;
+    let tickerCount = 0;
+    for (let [key,val] of Object.entries(selected)) {
+      if (val) {
+        tickerId = key;
+        tickerCount++;
+      }
+    }
+
+    // create svg
+    // let oldsvg = document.querySelector('svg');
+    // if (oldsvg) oldsvg.parentNode.removeChild(oldsvg);
+
+    const svg = select('#chart')
+    .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform",
+          "translate(" + margin.left + "," + margin.top + ")");
+
     
+    const newData = data.filter(el => el.ticker === tickerId);
+    console.log('data', newData);
+    // Add X axis --> it is a date format
+    var x = scaleTime()
+      .domain(extent(newData, function(d) { return d.date; }))
+      .range([ 0, width ]);
+    svg.append("g")
+      .attr("transform", "translate(0," + height + ")")
+      .call(axisBottom(x));
+
+    // Add Y axis
+    var y = scaleLinear()
+      .domain([min(newData, function(d) { return +d.price; }), max(newData, function(d) { return +d.price; })])
+      .range([ height, 0 ]);
+    svg.append("g")
+      .call(axisLeft(y));
+
+    // Add the line
+    svg.append("path")
+      .datum(newData)
+      .attr("fill", "none")
+      .attr("stroke", "steelblue")
+      .attr("stroke-width", 1.5)
+      .attr("d", line()
+        .x(function(d) { return x(d.date) })
+        .y(function(d) { return y(d.price) })
+        )
+
+        // const svg = document.querySelector('svg');
+        //   if (svg) svg.parentNode.removeChild(svg);
     return (
-      <div id="oneStockChart">
-          {JSON.stringify(selected)}
+      <div  id="oneStockChart">
+        {/* <div id="chart"></div> */}
+        ONESTOCKCHART
+        {JSON.stringify(selected)}
       </div>
     )
   }

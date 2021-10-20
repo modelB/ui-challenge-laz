@@ -30,7 +30,7 @@ class App extends Component {
             height: 360,
             selected: {
                 FB: true,
-                GOOG: false,
+                GOOGL: false,
                 AAPL: false,
                 MSFT: false
             },
@@ -41,7 +41,20 @@ class App extends Component {
     }
 
     checkTheBox(ticker) {
-        this.state.selected[ticker] = !this.state.selected[ticker];
+        // this.state.selected[ticker] = !this.state.selected[ticker];
+        this.setState((state,props) => {
+            state.selected[ticker] = !state.selected[ticker];
+            return state;
+        })
+
+        console.log(this.state);
+        let tickerCount = Object.entries(this.state.selected).reduce((a,c)=> {
+            return c[1] ? a+1 : a;
+        },0);
+        
+        // const svg = document.querySelector('svg');
+        // console.log('ticketcount', tickerCount);
+        // if (tickerCount !== 1 && svg) svg.parentNode.removeChild(svg);
     }
     // Build D3 Chart
 
@@ -71,6 +84,14 @@ class App extends Component {
         });
     }
 
+    componentDidUpdate() {
+        let tickerCount = Object.entries(this.state.selected).reduce((a,c)=> {
+            return c[1] ? a+1 : a;
+        },0);
+        const svg = document.querySelectorAll('svg');
+        console.log('ticketcount', tickerCount);
+        if (tickerCount !== 1 && svg.length > 1) svg[0].parentNode.removeChild(svg[0]);
+    }
     
     
 // // Add X axis --> it is a date format
@@ -113,7 +134,8 @@ class App extends Component {
     return (
       <div id="app">
           <Selection selected={this.state.selected} checkTheBox={this.checkTheBox} />
-          {(this.state.chartType === "single") ? <OneStockChart state={this.state} /> : null}
+          <div id="chart"></div>
+          {(tickerCount === 1) ? <OneStockChart state={this.state} /> : null}
       </div>
     )
   }

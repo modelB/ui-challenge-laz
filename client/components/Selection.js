@@ -7,8 +7,8 @@ const Selection = ({ selected, checkTheBox }) => {
         <div id="selection">
                 <p>Select the stocks to display:</p>
                 <div>
-                    <input type="checkbox" defaultChecked={selected.GOOG} onClick={(event)=>checkTheBox(event.target.id)} id="GOOG" name="GOOG" value="GOOG"/>
-                    <label htmlFor="GOOG">GOOG</label>
+                    <input type="checkbox" defaultChecked={selected.GOOGL} onClick={(event)=>checkTheBox(event.target.id)} id="GOOGL" name="GOOGL" value="GOOGL"/>
+                    <label htmlFor="GOOGL">GOOGL</label>
                 </div>
                 <div>
                     <input type="checkbox" defaultChecked={selected.FB} onClick={(event)=>checkTheBox(event.target.id)} id="FB" name="FB" value="FB"/>
