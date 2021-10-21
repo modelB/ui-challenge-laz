@@ -14,3 +14,11 @@ body {
 #title {
   margin: 0 50px;
 }
+
+#chart {
+  font-family: 'serif';
+}
+g {
+  font-family: 'News Cycle', sans-serif;
+  font-size: 0.8em;
+}

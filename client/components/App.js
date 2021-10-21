@@ -26,8 +26,8 @@ class App extends Component {
         super(props);
         this.state = {
             margin: {top: 10, right: 30, bottom: 30, left: 60},
-            width: 370,
-            height: 360,
+            width: 600,
+            height: 400,
             selected: {
                 FB: true,
                 GOOGL: false,
@@ -46,13 +46,11 @@ class App extends Component {
             state.selected[ticker] = !state.selected[ticker];
             return state;
         })
-
-        console.log(this.state);
         let tickerCount = Object.entries(this.state.selected).reduce((a,c)=> {
             return c[1] ? a+1 : a;
         },0);
         
-        // const svg = document.querySelector('svg');
+        const svg = document.querySelector('svg');
         // console.log('ticketcount', tickerCount);
         // if (tickerCount !== 1 && svg) svg.parentNode.removeChild(svg);
     }
@@ -89,8 +87,9 @@ class App extends Component {
             return c[1] ? a+1 : a;
         },0);
         const svg = document.querySelectorAll('svg');
-        console.log('ticketcount', tickerCount);
-        if (tickerCount !== 1 && svg.length > 1) svg[0].parentNode.removeChild(svg[0]);
+        if (tickerCount !== 1 && svg.length !== 0) {
+            svg[0].parentNode.removeChild(svg[0]);
+        }
     }
     
     
