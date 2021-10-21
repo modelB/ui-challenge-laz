@@ -68,14 +68,14 @@ class OneStockChart extends Component {
       .range([ 0, width ]);
     svg.append("g")
       .attr("transform", "translate(0," + height + ")")
-      .call(axisBottom(x).tickFormat(timeFormat("%H:%M")));
+      .call(axisBottom(x).tickSize(0).tickFormat(timeFormat("%H:%M")));
 
     // Add Y axis
     var y = scaleLinear()
       .domain([min(newData, function(d) { return +d.price; }), max(newData, function(d) { return +d.price; })])
       .range([ height, 0 ]);
     svg.append("g")
-      .call(axisLeft(y));
+      .call(axisLeft(y).tickSize(0));
 
     // Add the line
     svg.append("path")
@@ -91,8 +91,20 @@ class OneStockChart extends Component {
       .selectAll("text")
       .style("font-size","0.8em");
 
+    //give x axis id
+    // svg.select('.x.axis')
+    //   .attr("id", "xaxis")
+
     //add gridlines
-    
+    const gridlines = axisBottom()
+      .tickFormat("")
+      .tickSize(height)
+      .scale(x);
+
+    svg.append("g")
+    .attr("class", "grid")
+    .call(gridlines);
+
     return (
       <div  id="oneStockChart">
         {/* <div id="chart"></div> */}

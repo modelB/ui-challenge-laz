@@ -22,3 +22,13 @@ g {
   font-family: 'News Cycle', sans-serif;
   font-size: 0.8em;
 }
+
+.grid {
+  color: #DDDDDD
+}
+
+.domain {
+  opacity: 0;
+}
+
+
