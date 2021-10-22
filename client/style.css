@@ -18,9 +18,11 @@ body {
 #chart {
   font-family: 'serif';
 }
-g {
+g text{
   font-family: 'News Cycle', sans-serif;
   font-size: 0.8em;
+  font-weight: bold;
+  color: #888888
 }
 
 .grid {
@@ -30,5 +32,6 @@ g {
 .domain {
   opacity: 0;
 }
+
 
 
