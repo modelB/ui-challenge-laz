@@ -158,8 +158,94 @@ class OneStockChart extends Component {
     //give x axis id
     // svg.select('.x.axis')
     //   .attr("id", "xaxis")
-
+    //legend
+    svg.append("text")
+            .attr("x", width+70)  // space legend
+            .attr("y", 20)
+            .attr('id','legendticker')
+            .attr("class", "legend")    // style the legend
+            .attr("fill", "#FF7F0E")
+            .text(tickerId);
     
+    svg.append("rect")
+    .attr("x", width+62)  // space legend
+    .attr("y", -7)
+    .attr('width', 6)
+    .attr('height', 48)
+    .attr("class", "legend")    // style the legend
+    .attr("fill", "#FF7F0E")
+    .text(tickerId);
+
+    // console.log(newData[newData.length-1])
+    svg.append("text")
+            .attr("x", width+70)  // space legend
+            .attr("y", 36)
+            .attr('id','legendsub')
+            .attr("class", "legend")    // style the legend
+            .attr("fill", "#FF7F0E")
+            .text(() => "$"+newData[newData.length-1]['price'].slice(0, newData[newData.length-1]['price'].indexOf('.')+3));
+
+    if (newData.length) {
+      let chgPct = (Number(newData[newData.length-1]['price'])/Number(newData[0]['price'])-1)*100;
+      let chgTot = Number(newData[newData.length-1]['price'])-Number(newData[0]['price']);
+      if (chgPct >= 0) {
+        chgPct = String(Math.round(chgPct*100)/100);
+        chgTot = String(Math.round(chgTot*100)/100);
+        svg.append("text")
+            .attr("x", width+200)  // space legend
+            .attr("y", 20)
+            .attr('id','legendticker')
+            .attr("class", "legend")    // style the legend
+            .attr("fill", "#2CA02C")
+            .text("+"+chgPct);
+
+        svg.append("text")
+        .attr("x", width+273) // space legend
+        .attr("y", 20)
+        .attr('id','legendpct')
+        .attr("class", "legend")    // style the legend
+        .attr("fill", "#2CA02C")
+        .text("%");
+
+        svg.append("text")
+        .attr("x", width+240) // space legend
+        .attr("y", 36)
+        .attr('id','legendsub')
+        .attr("class", "legend")    // style the legend
+        .attr("fill", "#2CA02C")
+        .text("+$"+chgTot);
+            
+
+      } else {
+        chgPct = String(chgPct).slice(1,5);
+        chgTot = String(chgTot).slice(1,5);
+        svg.append("text")
+            .attr("x", width+200)  // space legend
+            .attr("y", 20)
+            .attr('id','legendticker')
+            .attr("class", "legend")    // style the legend
+            .attr("fill", "#D62728")
+            .text("-"+chgPct);
+
+        svg.append("text")
+        .attr("x", width+268) // space legend
+        .attr("y", 20)
+        .attr('id','legendpct')
+        .attr("class", "legend")    // style the legend
+        .attr("fill", "#D62728")
+        .text("%");
+
+        svg.append("text")
+        .attr("x", width+240) // space legend
+        .attr("y", 36)
+        .attr('id','legendsub')
+        .attr("class", "legend")    // style the legend
+        .attr("fill", "#D62728")
+        .text("-$"+chgTot);
+      }
+      console.log(chgPct);
+      console.log(chgTot);
+    }
 
     return (
       <div  id="oneStockChart">
