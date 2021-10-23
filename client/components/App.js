@@ -25,7 +25,7 @@ class App extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            margin: {top: 10, right: 30, bottom: 30, left: 60},
+            margin: {top: 15, right: 50, bottom: 30, left: 60},
             width: 600,
             height: 400,
             selected: {

@@ -3,9 +3,10 @@ import { csv } from 'd3-request'
 import { select } from 'd3-selection';
 import { scaleTime, scaleLinear } from 'd3-scale';
 import { extent, max, min } from 'd3-array';
-import { axisBottom, axisLeft } from 'd3-axis';
+import { axisBottom, axisRight } from 'd3-axis';
 import { line } from 'd3-shape';
 import { timeParse, timeFormat } from 'd3-time-format'
+import { format } from "d3-format";
 
 import io from 'socket.io-client'
 
@@ -62,20 +63,30 @@ class OneStockChart extends Component {
 
     
     const newData = data.filter(el => el.ticker === tickerId);
+    console.log('newdata', newData);
     // Add X axis --> it is a date format
     var x = scaleTime()
       .domain(extent(newData, function(d) { return d.date; }))
       .range([ 0, width ]);
     svg.append("g")
-      .attr("transform", "translate(0," + height + ")")
+      .attr("transform", "translate(0," + (height+3) + ")")
+      .attr('style', 'font-weight: bold;')
+      .call(axisBottom(x).tickSize(0).tickFormat(timeFormat("%H:%M")));
+
+    //also append x axis on top
+    svg.append("g")
+      .attr("transform", "translate(0,-15)")
+      .attr('style', 'font-weight: bold;')
       .call(axisBottom(x).tickSize(0).tickFormat(timeFormat("%H:%M")));
 
     // Add Y axis
     var y = scaleLinear()
-      .domain([min(newData, function(d) { return +d.price; }), max(newData, function(d) { return +d.price; })])
+      .domain([min(newData, function(d) { return +d.price }), max(newData, function(d) { return +d.price })])
       .range([ height, 0 ]);
     svg.append("g")
-      .call(axisLeft(y).tickSize(0));
+    .attr("transform", `translate(${width},-7)`)
+    .attr("style", "font-size: 1.1em;")
+      .call(axisRight(y).tickSize(0).ticks(5).tickFormat(format('.2f')));
 
     //add gridlines
     const gridlines = axisBottom()
@@ -86,6 +97,18 @@ class OneStockChart extends Component {
     svg.append("g")
     .attr("class", "grid")
     .call(gridlines);
+
+    const gridlines2 = axisRight()
+    .ticks(5)
+      .tickFormat("")
+      .tickSize(width+43)
+      .scale(y);
+
+    svg.append("g")
+    .attr("class", "grid")
+    .attr('id','horizontalgrid')
+    .call(gridlines2);
+
 
     //add border white line
     svg.append("path")
@@ -102,6 +125,7 @@ class OneStockChart extends Component {
     svg.append("path")
       .datum(newData)
       .attr("fill", "none")
+      .attr('class', 'patharea')
       .attr("stroke", "#FF7F0E")
       .attr("stroke-width", 2)
       .attr("d", line()
@@ -111,6 +135,25 @@ class OneStockChart extends Component {
     svg.select(".x.axis")
       .selectAll("text")
       .style("font-size","0.8em");
+
+    //add circle
+    svg
+            .append("svg:circle")
+                .attr("cx", () => x(newData[newData.length-1].date))
+                .attr("cy", () => y(newData[newData.length-1].price))
+                .attr("stroke", "white")
+                .attr("fill", "white")
+                .attr("r", 5)
+                .attr("class", "circle");
+
+    svg
+            .append("svg:circle")
+                .attr("cx", () => x(newData[newData.length-1].date))
+                .attr("cy", () => y(newData[newData.length-1].price))
+                .attr("stroke", "#FF7F0E")
+                .attr("fill", "#FF7F0E")
+                .attr("r", 4)
+                .attr("class", "circle");
 
     //give x axis id
     // svg.select('.x.axis')

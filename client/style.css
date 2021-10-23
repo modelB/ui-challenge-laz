@@ -29,6 +29,10 @@ g text{
   color: #DDDDDD
 }
 
+#horizontalgrid {
+  color: #888888
+}
+
 .domain {
   opacity: 0;
 }
