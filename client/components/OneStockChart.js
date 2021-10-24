@@ -189,10 +189,10 @@ class OneStockChart extends Component {
       let chgPct = (Number(newData[newData.length-1]['price'])/Number(newData[0]['price'])-1)*100;
       let chgTot = Number(newData[newData.length-1]['price'])-Number(newData[0]['price']);
       if (chgPct >= 0) {
-        chgPct = String(Math.round(chgPct*100)/100);
-        chgTot = String(Math.round(chgTot*100)/100);
+        chgPct = (Math.round(chgPct*100)/100).toFixed(2);
+        chgTot = (Math.round(chgTot*100)/100).toFixed(2);
         svg.append("text")
-            .attr("x", width+200)  // space legend
+            .attr("x", width+199)  // space legend
             .attr("y", 20)
             .attr('id','legendticker')
             .attr("class", "legend")    // style the legend
@@ -220,7 +220,7 @@ class OneStockChart extends Component {
         chgPct = String(chgPct).slice(1,5);
         chgTot = String(chgTot).slice(1,5);
         svg.append("text")
-            .attr("x", width+200)  // space legend
+            .attr("x", width+201)  // space legend
             .attr("y", 20)
             .attr('id','legendticker')
             .attr("class", "legend")    // style the legend
